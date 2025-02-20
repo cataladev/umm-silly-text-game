@@ -1,17 +1,17 @@
 from game_state import GameState
 from commands import setup_commands
 from actions import show_help
-
+from vars import *
 def game_loop():
     game = GameState()
     command_trie = setup_commands()
-    print(f"Welcome to the \033[31mFarming\033[0m Game!")
-    print("Type 'help' for a list of commands.")
-    print("Type 'quit' to exit the game.")
+    print(f"Welcome to the {RED} Game! {RESET}")
+    print("Explore the map, things will grow and appear as the days go by.")
     print("Type 'inventory' to check your inventory.")
-    print("=== Day 1 Begins ===")
+    print("Type 'help' for a list of commands.")
+    print("Type 'quit' to exit the game.")  
     while True:
-        print(f"\nDay {game.day} - {game.format_time()} - You're in your {game.location}.")
+        print(f"\n{game.format_time()} - You're in your {game.location}.")
         command = input("> ").strip().lower().split()
         
         if command == ["help"]:
