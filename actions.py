@@ -9,7 +9,10 @@ def show_inventory(game: GameState):
     print("\n=== Inventory ===")
     print(f"Gold: {game.inventory['gold']}")
     print("Crops:")
-    for crop, amount in game.inventory["crops"].items():
+    for crop, amount in game.inventory["crop"].items():
+        print(f"  {crop.capitalize()}: {amount}")
+    print("Crop Seeds:")
+    for crop, amount in game.inventory["crop seeds"].items():
         print(f"  {crop.capitalize()}: {amount}")
     print("Equipment:")
     if game.inventory["equipment"]:
@@ -28,9 +31,10 @@ def show_help(game: GameState, command_trie):
     print(f"> {BLUE}help{RESET}: {YELLOW}Show this help message.{RESET}")
 
 def check_map(game: GameState):
-    print("You look at your map.")
-    print("Farm: A small plot of land outside.")
+    print("\nYou look at your map.")
     print("House: Your cozy home.")
+    print("Farm: A small plot of land outside.")
+    print("Town: A bustling place with shops and people.")
 
 def lore(game:GameState):
     match game.location:
@@ -83,8 +87,8 @@ def buy_seeds(game: GameState):
         print("Not enough gold!")
 
 def sell_wheat(game: GameState):
-    if game.inventory["crops"]["wheat"] >= 5:
-        game.inventory["crops"]["wheat"] -= 5
+    if game.inventory["crop"]["wheat"] >= 5:
+        game.inventory["crop"]["wheat"] -= 5
         game.inventory["gold"] += 15
         game.add_time(15)
         print("Sold 5 wheat!")

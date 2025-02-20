@@ -5,7 +5,7 @@ from vars import *
 def game_loop():
     game = GameState()
     command_trie = setup_commands()
-    print(f"Welcome to the {RED} Game! {RESET}")
+    print(f"Welcome to the{RED} Game! {RESET}")
     print("Explore the map, things will grow and appear as the days go by.")
     print("Type 'inventory' to check your inventory.")
     print("Type 'help' for a list of commands.")
