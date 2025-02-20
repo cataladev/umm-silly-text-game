@@ -1,10 +1,11 @@
+# trie.py
 class TrieNode:
     def __init__(self):
         self.children = {}
         self.is_end = False
         self.locations = set()
         self.action = None
-        self.description = ""  # Add description field
+        self.description = ""
 
 class CommandTrie:
     def __init__(self):
@@ -19,7 +20,7 @@ class CommandTrie:
         node.is_end = True
         node.locations.update(locations)
         node.action = action
-        node.description = description  # Store description
+        node.description = description
 
     def search(self, command_words, current_location):
         node = self.root
@@ -27,7 +28,7 @@ class CommandTrie:
             if word not in node.children:
                 return None
             node = node.children[word]
-        if node.is_end and current_location in node.locations:
+        if node.is_end and (current_location in node.locations or "*" in node.locations):
             return node.action
         return None
 
@@ -37,7 +38,7 @@ class CommandTrie:
         return commands
 
     def _collect_commands(self, node, prefix, current_location, commands):
-        if node.is_end and current_location in node.locations:
+        if node.is_end and (current_location in node.locations or "*" in node.locations):
             commands.append((" ".join(prefix), node.description))
         for word, child in node.children.items():
             self._collect_commands(child, prefix + [word], current_location, commands)
