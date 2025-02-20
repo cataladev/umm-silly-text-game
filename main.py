@@ -2,6 +2,7 @@ from game_state import GameState
 from commands import setup_commands
 from actions import show_help
 from vars import *
+
 def game_loop():
     game = GameState()
     command_trie = setup_commands()
@@ -12,18 +13,27 @@ def game_loop():
     print("Type 'quit' to exit the game.")  
     while True:
         print(f"\n{game.format_time()} - You're in your {game.location}.")
-        command = input("> ").strip().lower().split()
+        user_input = input("> ").strip().lower()
+        command_parts = user_input.split()
         
-        if command == ["help"]:
+        if not command_parts:
+            continue
+        
+        command = command_parts[0]
+        params = command_parts[1:]  # Extract parameters
+        
+        if command == "help":
             show_help(game, command_trie)
             continue
         
-        action = command_trie.search(command, game.location)
+        # Search for the command in the Trie
+        action = command_trie.search(command_parts, game.location)
         
         if action:
-            action(game)
-            if game.time == 360 and game.day > 1:
-                print(f"\n=== Day {game.day} Begins ===")
+            try:
+                action(game, *params)  # Pass parameters to the action
+            except TypeError as e:
+                print(f"Invalid usage: {e}")
         else:
             print("Invalid command or not allowed here!")
 
