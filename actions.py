@@ -28,14 +28,18 @@ def show_help(game: GameState, command_trie):
     sorted_commands = sorted(commands, key=lambda x: x[0])
     
     for cmd, desc in sorted_commands:
-        print(f"> {BLUE}{cmd}{RESET}: {YELLOW}{desc}{RESET}")
-    print(f"> {BLUE}help{RESET}: {YELLOW}Show this help message.{RESET}")
+        print(f"> {YELLOW}{cmd}{RESET}: {BLUE}{desc}{RESET}")
+    print(f"> {YELLOW}help{RESET}: {BLUE}Show this help message.{RESET}")
 
 def check_map(game: GameState):
-    print("\nYou look at your map.")
-    print("House: Your cozy home.")
-    print("Farm: A small plot of land outside.")
-    print("Town: A bustling place with shops and people.")
+    print("\n=== Map ===")
+    locations = {
+        "house": f"House {'(You are here)' if game.location == 'house' else ' Your cozy house.'}",
+        "farm": f"Farm {'(You are here)' if game.location == 'farm' else ' A small plot of land outside your house.'}",
+        "town": f"Town {'(You are here)' if game.location == 'town' else ' A bustling place with shops and people.'}"
+    }
+    for loc in locations.values():
+        print(f"- {loc}")
 
 def lore(game: GameState):
     match game.location:
@@ -73,7 +77,7 @@ def go_town(game: GameState):
 # =========================== Town Actions =============================
 def buy_seeds(game: GameState, amount: str = "5"):
     try:
-        amount = int(amount)  # Convert parameter to integer
+        amount = int(amount)
     except ValueError:
         print("Invalid amount!")
         return
@@ -82,14 +86,14 @@ def buy_seeds(game: GameState, amount: str = "5"):
         print("You can only buy seeds in town!")
         return
     
-    total_cost = amount * 4  # Assume seeds cost 4 gold each
+    total_cost = amount * 4  # 4 gold per seed
     if game.inventory["gold"] < total_cost:
-        print(f"You don't have enough gold to buy {amount} seeds!")
+        print(f"Not enough gold! You need {total_cost} gold.")
         return
     
     game.inventory["gold"] -= total_cost
     game.inventory["crop seeds"]["wheat"] += amount
-    game.add_time(15)  # Buying takes 15 minutes
+    game.add_time(15)
     print(f"Bought {amount} wheat seeds for {total_cost} gold!")
 
 def sell_wheat(game: GameState, amount: str = "5"):
@@ -179,6 +183,15 @@ def harvest(game: GameState):
     if not harvested:
         print("No crops are ready to harvest yet.")
     game.add_time(30)  # Harvesting takes 30 minutes
+    
+def check_plots(game: GameState):
+    print("\n=== Farm Status ===")
+    print(f"Available plots: {game.farm['plots']}")
+    print("Growing crops:")
+    for crop, data in game.farm["growing"].items():
+        if data["plots"] > 0:
+            growth = "🌱" * data["stage"] + "⬜" * (3 - data["stage"])
+            print(f"- {crop.capitalize()}: {data['plots']} plots ({growth})")
 
 # =========================== House Actions =============================
 def sleep(game: GameState):

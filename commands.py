@@ -1,4 +1,3 @@
-# commands.py
 from trie import CommandTrie
 from actions import *
 
@@ -6,25 +5,28 @@ def setup_commands():
     trie = CommandTrie()
     
     # Universal commands (available everywhere)
-    trie.insert(["quit"], ["*"], lambda game, *_: quit_game(game), "Quit the game.")
-    trie.insert(["inventory"], ["*"], lambda game, *_: show_inventory(game), "Check your inventory.")
-    trie.insert(["map"], ["*"], lambda game, *_: check_map(game), "Show this help message.")
-    trie.insert(["lore"], ["*"], lambda game, *_: lore(game), "Show the game's lore.")
+    trie.insert(["quit"], ["*"], quit_game, "Quit the game.")
+    trie.insert(["inventory"], ["*"], show_inventory, "Check your inventory.")
+    trie.insert(["map"], ["*"], check_map, "Show this help message.")
+    trie.insert(["lore"], ["*"], lore, "Show the game's lore.")
+    trie.insert(["save"], ["*"], lambda game, *_: game.save_game(), "Save the game.")
+    trie.insert(["load"], ["*"], lambda game, *_: GameState.load_game(), "Load the game.")
     
     # House commands
-    trie.insert(["sleep"], ["house"], lambda game, *_: sleep(game), "Honk shuu.")
-    trie.insert(["bertha"], ["house"], lambda game, *_: bertha(game), "Play with Bertha.")
-    trie.insert(["go", "farm"], ["house"], lambda game, *_: go_farm(game), "Go to your farm.")
-    trie.insert(["go", "town"], ["house"], lambda game, *_: go_town(game), "Travel to the town.")
+    trie.insert(["sleep"], ["house"], sleep, "Honk shuu.")
+    trie.insert(["bertha"], ["house"], bertha, "Play with Bertha.")
+    trie.insert(["go", "farm"], ["house"], go_farm, "Go to your farm.")
+    trie.insert(["go", "town"], ["house"], go_town, "Travel to the town.")
     
     # Farm commands
     trie.insert(["plant", "wheat"], ["farm"], lambda game, *params: plant(game, "wheat", *params), "Plant wheat seeds. Usage: plant wheat [plots]")
     trie.insert(["plant", "corn"], ["farm"], lambda game, *params: plant(game, "corn", *params), "Plant corn seeds. Usage: plant corn [plots]")
     trie.insert(["water"], ["farm"], lambda game, *_: water(game), "Water your crops.")
     trie.insert(["harvest"], ["farm"], lambda game, *_: harvest(game), "Harvest fully grown crops.")
+    trie.insert(["check", "plots"], ["farm"], lambda game, *_: check_plots(game), "Check crop growth status.")
     
     # Travel commands
-    trie.insert(["go", "house"], ["farm", "town"], lambda game, *_: go_house(game), "Return home.")
+    trie.insert(["go", "house"], ["farm", "town"], go_house, "Return home.")
     
     # Town commands
     trie.insert(["buy", "seeds"], ["town"], lambda game, *params: buy_seeds(game, *params), "Buy wheat seeds. Usage: buy seeds [amount]")

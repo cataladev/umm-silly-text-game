@@ -23,13 +23,19 @@ class CommandTrie:
 
     def search(self, command_words, current_location):
         node = self.root
+        depth = 0
+        last_valid_action = None
+        
+        # Find the deepest matching command
         for word in command_words:
             if word not in node.children:
-                return None
+                break
             node = node.children[word]
-        if node.is_end and (current_location in node.locations or "*" in node.locations):
-            return node.action
-        return None
+            depth += 1
+            if node.is_end and (current_location in node.locations or "*" in node.locations):
+                last_valid_action = node.action
+        
+        return last_valid_action
 
     def get_all_commands(self, current_location):
         commands = []
